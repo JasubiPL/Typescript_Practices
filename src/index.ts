@@ -1,107 +1,73 @@
-//Functions
-function  saludar(){
-  console.log('Hola Jasubi')
+import { deleteAllCookies, deleteCookie, getCookieValue, setCookie } from 'cookies-utils'
+
+//Sobrecarga de funciones
+
+function mostrarError(error: string | number){
+  console.log(error)
 }
 
-saludar()
+//Persistencia de datos
+//1. Local Storage --> Almacena los datos en el navegador (No se eliminan en automatico)
+//2. Session Storage --> Almacena los datos en el navegador hasta que se cierra el navegador
+//3. Cookies --> Tienen una fecha de caducidad y un ambito de url que nos permite saber quien podra acceder a los datos
 
-/**
- * Funcion que saluda a un usuario
- * @param nombre nombre de usuario
- */
-function  saludarUsuario(nombre: string){
-  console.log(`hola ${nombre}`)
+//Local storage
+// function guardarLocalStorage(): void{
+//   localStorage.set("nombre", "Martin")
+  
+// }
+
+// function leerLocalStorage(): void{
+//   const nombre = localStorage.get("nombre")
+// }
+
+
+//Cookies
+
+const cookie = {
+  name: "usuario",
+  value: "Jasubi",
+  expires: new Date(2024, 7, 17),
+  path: "/"
 }
 
-saludarUsuario("JasubiP")
+//enviamos cookie
+setCookie(cookie)
 
-/**
- * Funcion que despde a un usuario
- * @param nombre nombre de usuario opcional, por defecto sera pepe
- */
-function  despedirUsuario(nombre: string = "Pepe"){
-  console.log(`Adios ${nombre}`)
-}
+//Eliminamos cookie
+deleteCookie("usuario")
 
-despedirUsuario()
+//Eliminar todas las cookies
+deleteAllCookies()
 
-/**
- * Funcion con para metros opcionales
- * @param nombre nombre de usuario (opcional)
- */
-function despedidaOpcional(nombre?: string){
-  if(nombre){
-    console.log(`Adios ${nombre}`)
-  }else{
-    console.log('Adios')
+//Leer una cookie
+let usuario = getCookieValue("usuario")
+
+//clase Tempórizador
+class Temporizador {
+  public terminar?: () => void
+
+  public empezar(): void {
+
+    setTimeout(() => {
+
+      if(!this.terminar) return
+
+      //Cuando se termine el tiempo se ejecutara la funcion terminar si es que existe
+      this.terminar();
+
+    }, 10000)
+
   }
 }
 
-despedidaOpcional()
-despedidaOpcional("Jas")
+const miTemporizador: Temporizador = new Temporizador()
 
-function datosContacto(nombre: string, email: string, edad?: number,){
-  if(edad){
-    console.log(`Hola ${nombre} con email ${email}, tienes ${edad}`)
-  }else{
-    console.log(`Hola ${nombre} con email ${email}`)
-  }
+miTemporizador.terminar = () => {
+  console.log("Hemos terminado la tarea")
 }
 
-datosContacto("jasubi", "Jasubi.com")
-datosContacto("jasubi", "Jasubi.com", 26)
+miTemporizador.empezar()
 
-/**
- * 
- * @param apellidos Apellidos del usuario
- * @param nombre nombre del usuario
- * @returns nombre completo del usuario
- */
-function ejemploReturn(apellidos: string, nombre?: string): string{
-  return `${nombre} ${apellidos}`
-}
-
-const nombreCompleto = ejemploReturn("Piñeyro","Jasubi")
-
-console.log(nombreCompleto)
-
-/**
- * 
- * @param nombres es una lista de nombres en string
- */
-
-function ejemploMultiParam(...nombres: string[]): void{
-  nombres.forEach((nombre) =>{
-    console.log(nombre)
-  })
-}
-
-ejemploMultiParam("Jasubi", "Lehem", "Piñeyro", "Legaspi")
-
-//Arrow function
-
-type Empleado = {
-  nombre: string,
-  apellido: string,
-  edad: number
-}
-
-let empleadoMartin: Empleado = {
-  nombre: "Martin",
-  apellido: "Santa Cruz",
-  edad: 30
-}
-
-const mostrarEmpleado = (empleado: Empleado): string => `${empleado.nombre} tiene ${empleado.edad} años`
-
-console.log(mostrarEmpleado(empleadoMartin))
-
-const datosEmpleado = (empleado: Empleado): string =>{
-  if(empleado.edad > 70){
-    return `Empleado ${empleado.nombre} esta en edad de juvilacion`
-  }else{
-    return `Empleado ${empleado.nombre} esta en edad laboral`
-  }
-}
-
-console.log(datosEmpleado(empleadoMartin))
+//eliminar ejecucion
+delete miTemporizador.terminar
